@@ -1,0 +1,15 @@
+int main(int argc, float argv[3])
+{
+	struct FILE f;
+	if (argc != 2)
+	{
+		exit(0);
+	}
+	if (!f)
+	{
+		Error(argv[1]);
+		return f++;
+	}
+	
+	while (i=1;) i = i + 1;
+}

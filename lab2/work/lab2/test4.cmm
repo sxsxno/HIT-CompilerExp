@@ -1,0 +1,24 @@
+struct Comlpex
+{
+	float real, image;
+};
+struct mytest{
+	int num1;
+} test1[5],test2,test3;
+int main(int u,int t)
+{
+	int nnnn[2][3][4];
+	struct Comlpex y;
+	struct mytest test5,test2;
+	int black = 123;
+	int num = 124;
+	y.image = 3.5;
+	test1[1] = test2;
+}
+int tty(int a, int b){
+	main(5,6);
+	return 2.4;
+	while(3){
+		a = b;
+	}
+}

@@ -1,0 +1,23 @@
+Error type 1 at Line 4: Undefined variable "j".
+Error type 2 at Line 4: Undefined function "inc".
+Error type 3 at Line 4: Redefined variable "i".
+Error type 4 at Line 6: Redefined function "func".
+Error type 5 at Line 4: Type mismatched for assignment.
+Error type 6 at Line 4: The left-hand side of an assignment must be avariable.
+Error type 7 at Line 4: Type mismatched for operands.
+Error type 8 at Line 4: Type mismatched for return.
+Error type 9 at Line 8: mismatch arguments to function "func", except 1 args.
+Error type 10 at Line 4: use a none-array object.
+Error type 11 at Line 4: "i" is not a function.
+Error type 12 at Line 4: Input is a FLOAT not an integer.
+Error type 13 at Line 9: Illegal use of ".".
+Error type 14 at Line 9: Non-existent field.
+Error type 15 at Line 4: Redefined field "x".
+Error type 16 at Line 6: Duplicated name "Position".
+Error type 17 at Line 3: Undefined structure "Position".
+Error type B at line 1: syntax error.
+Error type B at line 6: syntax error.
+Error type 3 at Line 10: Redefined variable "i".
+Error type 5 at Line 17: Type mismatched for assignment.
+Error type 5 at Line 16: Type mismatched for assignment.
+Error type 10 at Line 10: use a none-array object.

@@ -1,0 +1,47 @@
+struct TempStruct
+{
+	int array1[100];
+	float array2[10][10];
+};
+
+struct TempStruct2
+{
+	int array3[100];
+	float array4[10][10];
+};
+
+struct TempStruct3
+{
+	int array5[100];
+	float array6[4][25][1];
+};
+
+struct Complex
+{
+	float real, image;
+	struct TempStruct field[5];
+};
+
+struct Complex2
+{
+	float q1;
+	float q2;
+	struct TempStruct2 field2[5];
+};
+
+struct Complex3
+{
+	float q3, q4;
+	struct TempStruct3 field3[5];
+};
+
+int main()
+{
+	struct Complex c1;
+	struct Complex2 c2;
+	struct Complex3 c3;
+	
+	c1 = c2;
+	c2 = c3;
+	c3 = c1;
+}

@@ -1,0 +1,1 @@
+struct V_stack test_stack == 1;
