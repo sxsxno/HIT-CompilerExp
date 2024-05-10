@@ -10,6 +10,8 @@
         yylloc.last_column = yycolumn + yyleng - 1; \
         yycolumn += yyleng;
     int yydebug = 1;
+    treeNode root;
+    extern FILE* fw;
 %}
 %union{
     treeNode node_;
@@ -47,7 +49,6 @@ Program : ExtDefList    { $$ = make_node(yylineno,5,"Program");treeNode N_list[1
         printInterCode(fw, interCodeList);
     }
     deleteTable(table);}
-
     ;
     
 ExtDefList : ExtDef ExtDefList  { $$ = make_node(yylineno,5,"ExtDefList");treeNode N_list[2]={$1,$2};link_node($$,2,N_list); }

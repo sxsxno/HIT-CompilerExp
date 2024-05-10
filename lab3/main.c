@@ -4,6 +4,7 @@
 #include"def.h"
 #include<stdarg.h>
 #include<stdlib.h>
+#include<assert.h>
 extern char* yytext;
 extern char* yydebug;
 void init_node(treeNode node){
@@ -435,6 +436,7 @@ int check_conflict(pTable table, pItem item) {
 void insert_Item(pTable table, pItem item) {
     check(table != NULL && item != NULL);
     unsigned hashCode = hash_pjw(item->field->name); 
+    // printf("[+] %s\n",item->field->name);
     pHash hash = table->hash;
     pStack stack = table->stack;
     item->next_Item = get_scope_stackhead(stack);
@@ -442,10 +444,12 @@ void insert_Item(pTable table, pItem item) {
 
     item->next_Hash = getHashTop(hash, hashCode); 
     setHashTop(hash, hashCode, item);
+    // printTable(table);
 }
 
 void delete_Item(pTable table, pItem item) {
     check(table != NULL && item != NULL);
+    // printf("[-] %s\n",item->field->name);
     unsigned hashCode = hash_pjw(item->field->name);
     if (item == getHashTop(table->hash, hashCode))
         setHashTop(table->hash, hashCode, item->next_Hash);
@@ -807,7 +811,8 @@ void CompSt(treeNode node, pType returnType) {
     if (!strcmp(temp->name, "StmtList")) {
         StmtList(temp, returnType);
     }
-    clear_scope_stack(table);
+    // Edited : 为lab3准备，函数定义的过程变量这里不再清除
+    // clear_scope_stack(table);
 }
 
 void StmtList(treeNode node, pType returnType) {
@@ -1100,8 +1105,7 @@ pType Exp(treeNode node) {
                            p2->basic != INT_TYPE) {
                     //报错，不用int索引[] -> a[1.5]
                     char msg[100] = {0};
-                    sprintf(msg, "input is not an INT.",
-                            t->next_bro->next_bro->first_son->name);
+                    sprintf(msg, "input is not an INT.");
                     Error(NOT_A_INT, t->lineno, msg);
                 } 
                 else {
@@ -1267,7 +1271,7 @@ void Args(treeNode node, pItem funcInfo) {
 }
 
 // func for lab3 
-boolean interError = FALSE;
+int interError = 0;
 pInterCodeList interCodeList;
 
 // Operand func
@@ -1803,7 +1807,7 @@ int getSize(pType type) {
         pFieldList temp = type->structure.field;
         while (temp) {
             size += getSize(temp->type);
-            temp = temp->tail;
+            temp = temp->next;
         }
         return size;
     }
@@ -1955,7 +1959,7 @@ void translateFunDec(treeNode node) {
         // pInterCodes arg = newInterCodes(newInterCode(
         //     IR_PARAM, newOperand(OP_VARIABLE, newString(temp->name))));
         // addInterCode(interCodeList, arg);
-        temp = temp->tail;
+        temp = temp->next;
     }
 }
 
@@ -1967,7 +1971,7 @@ void translateCompSt(treeNode node) {
     treeNode temp = node->first_son->next_bro;
     if (!strcmp(temp->name, "DefList")) {
         translateDefList(temp);
-        temp = temp->next;
+        temp = temp->next_bro;
     }
     if (!strcmp(temp->name, "StmtList")) {
         translateStmtList(temp);
@@ -1988,7 +1992,7 @@ void translateDef(treeNode node) {
     assert(node != NULL);
     if (interError) return;
     // Def -> Specifier DecList SEMI
-    translateDecList(node->first_son->next);
+    translateDecList(node->first_son->next_bro);
 }
 
 void translateDecList(treeNode node) {
@@ -2025,7 +2029,72 @@ void translateDec(treeNode node) {
         genInterCode(IR_ASSIGN, t1, t2);
     }
 }
-
+// for Debug 
+pItem getHashHead(pHash hash, int index) {
+    assert(hash != NULL);
+    return hash->hashArray[index];
+}
+void printType(pType type) {
+    if (type == NULL) {
+        printf("type is NULL.\n");
+    } else {
+        printf("type kind: %d\n", type->kind);
+        switch (type->kind) {
+            case BASIC:
+                printf("type basic: %d\n", type->basic);
+                break;
+            case ARRAY:
+                printf("array size: %d\n", type->array.size);
+                printType(type->array.elem);
+                break;
+            case STRUCTURE:
+                if (!type->structure.structName)
+                    printf("struct name is NULL\n");
+                else {
+                    printf("struct name is %s\n", type->structure.structName);
+                }
+                printFieldList(type->structure.field);
+                break;
+            case FUNCTION:
+                printf("function argc is %d\n", type->function.argc);
+                printf("function args:\n");
+                printFieldList(type->function.argv);
+                printf("function return type:\n");
+                printType(type->function.returnType);
+                break;
+        }
+    }
+}
+void printFieldList(pFieldList fieldList) {
+    if (fieldList == NULL)
+        printf("fieldList is NULL\n");
+    else {
+        printf("fieldList name is: %s\n", fieldList->name);
+        printf("FieldList Type:\n");
+        printType(fieldList->type);
+        printf("isArg: %d\n", fieldList->isArg);
+        printFieldList(fieldList->next);
+    }
+}
+void printTable(pTable table) {
+    printf("----------------hash_table----------------\n");
+    for (int i = 0; i < 0x3fff; i++) {
+        pItem item = getHashHead(table->hash, i);
+        if (item) {
+            printf("[%d]", i);
+            while (item) {
+                printf(" -> name: %s depth: %d\n", item->field->name,item->symbolDepth);
+                printf("========FiledList========\n");
+                printFieldList(item->field);
+                printf("===========End===========\n");
+                item = item->next_Hash;
+            }
+            printf("\n");
+        }
+    }
+    printf("-------------------end--------------------\n");
+}
+//Debug func End
 void translateVarDec(treeNode node, pOperand place) {
     assert(node != NULL);
     if (interError) return;
@@ -2034,6 +2103,7 @@ void translateVarDec(treeNode node, pOperand place) {
 
     //  VarDec -> ID
     if (!strcmp(node->first_son->name, "ID")) {
+        // printTable(table);
         pItem temp = searchTableItem(table, node->first_son->id);
         pType type = temp->field->type;
         if (type->kind == BASIC) {
@@ -2047,7 +2117,7 @@ void translateVarDec(treeNode node, pOperand place) {
         else if (type->kind == ARRAY) {
             // 二维以上数组不支持翻译
             if (type->array.elem->kind == ARRAY) {
-                interError = TRUE;
+                interError = 1;
                 printf("Cannot translate: Code contains variables of multi-dimensional array type or parameters of array type.\n");
                 return;
             } 
@@ -2075,7 +2145,7 @@ void translateStmtList(treeNode node) {
     //           | e
     while (node) {
         translateStmt(node->first_son);
-        node = node->first_son->next;
+        node = node->first_son->next_bro;
     }
 }
 
@@ -2103,14 +2173,14 @@ void translateStmt(treeNode node) {
     // Stmt -> RETURN Exp SEMI
     else if (!strcmp(node->first_son->name, "RETURN")) {
         pOperand t1 = newTemp();
-        translateExp(node->first_son->next, t1);
+        translateExp(node->first_son->next_bro, t1);
         genInterCode(IR_RETURN, t1);
     }
 
     // Stmt -> IF LP Exp RP Stmt
     else if (!strcmp(node->first_son->name, "IF")) {
-        treeNode exp = node->first_son->next->next;
-        treeNode stmt = exp->next->next;
+        treeNode exp = node->first_son->next_bro->next_bro;
+        treeNode stmt = exp->next_bro->next_bro;
         pOperand label1 = newLabel();
         pOperand label2 = newLabel();
         // if Exp goto lable 1
@@ -2122,7 +2192,7 @@ void translateStmt(treeNode node) {
         translateCond(exp, label1, label2);
         genInterCode(IR_LABEL, label1);
         translateStmt(stmt);
-        if (stmt->next == NULL) {
+        if (stmt->next_bro == NULL) {
             genInterCode(IR_LABEL, label2);
         }
         // Stmt -> IF LP Exp RP Stmt ELSE Stmt
@@ -2139,7 +2209,7 @@ void translateStmt(treeNode node) {
             // Goto lable3
             // XXX
             genInterCode(IR_LABEL, label2);
-            translateStmt(stmt->next->next);
+            translateStmt(stmt->next_bro->next_bro);
             genInterCode(IR_LABEL, label3);
         }
 
@@ -2158,9 +2228,9 @@ void translateStmt(treeNode node) {
         // goto lable 1
         // lable 3
         genInterCode(IR_LABEL, label1);
-        translateCond(node->first_son->next->next, label2, label3);
+        translateCond(node->first_son->next_bro->next_bro, label2, label3);
         genInterCode(IR_LABEL, label2);
-        translateStmt(node->first_son->next->next->next->next);
+        translateStmt(node->first_son->next_bro->next_bro->next_bro->next_bro);
         genInterCode(IR_GOTO, label1);
         genInterCode(IR_LABEL, label3);
     }
@@ -2229,21 +2299,21 @@ void translateExp(treeNode node, pOperand place) {
                     pOperand t1 = newTemp();
                     translateExp(node->first_son, t1);
                     pOperand t2 = newTemp();
-                    translateExp(node->first_son->next->next, t2);
+                    translateExp(node->first_son->next_bro->next_bro, t2);
                     // Exp -> Exp PLUS Exp
-                    if (!strcmp(node->first_son->next->name, "PLUS")) {
+                    if (!strcmp(node->first_son->next_bro->name, "PLUS")) {
                         genInterCode(IR_ADD, place, t1, t2);
                     }
                     // Exp -> Exp MINUS Exp
-                    else if (!strcmp(node->first_son->next->name, "MINUS")) {
+                    else if (!strcmp(node->first_son->next_bro->name, "MINUS")) {
                         genInterCode(IR_SUB, place, t1, t2);
                     }
                     // Exp -> Exp STAR Exp
-                    else if (!strcmp(node->first_son->next->name, "STAR")) {
+                    else if (!strcmp(node->first_son->next_bro->name, "STAR")) {
                         genInterCode(IR_MUL, place, t1, t2);
                     }
                     // Exp -> Exp DIV Exp
-                    else if (!strcmp(node->first_son->next->name, "DIV")) {
+                    else if (!strcmp(node->first_son->next_bro->name, "DIV")) {
                         genInterCode(IR_DIV, place, t1, t2);
                     }
                 }
@@ -2254,18 +2324,18 @@ void translateExp(treeNode node, pOperand place) {
         else {
             // Exp -> Exp LB Exp RB
             // a[1]
-            if (!strcmp(node->first_son->next->name, "LB")) {
+            if (!strcmp(node->first_son->next_bro->name, "LB")) {
                 //数组
-                if (node->first_son->first_son->next &&!strcmp(node->first_son->first_son->next, "LB")) {
+                if (node->first_son->first_son->next_bro &&!strcmp(node->first_son->first_son->next_bro, "LB")) {
                     //出现多维数组则报错
-                    interError = TRUE;
+                    interError = 1;
                     printf("Cannot translate: Code contains variables of multi-dimensional array type or parameters of array type.\n");
                     return;
                 } 
                 else {
                     // 
                     pOperand idx = newTemp();
-                    translateExp(node->first_son->next->next, idx);
+                    translateExp(node->first_son->next_bro->next_bro, idx);
                     pOperand base = newTemp();
                     translateExp(node->first_son, base);
 
@@ -2312,7 +2382,7 @@ void translateExp(treeNode node, pOperand place) {
                     genInterCode(IR_GET_ADDR, target, temp);
                 }
 
-                pOperand id = newOperand(OP_VARIABLE, newString(node->first_son->next->next->id));
+                pOperand id = newOperand(OP_VARIABLE, newString(node->first_son->next_bro->next_bro->id));
                 int offset = 0;
                 pItem item = searchTableItem(table, temp->name);
                 //结构体数组
@@ -2334,7 +2404,7 @@ void translateExp(treeNode node, pOperand place) {
                 while (tmp) {
                     if (!strcmp(tmp->name, id->name)) break;
                     offset += getSize(tmp->type);
-                    tmp = tmp->tail;
+                    tmp = tmp->next;
                 }
 
                 pOperand tOffset = newOperand(OP_CONSTANT, offset);
@@ -2351,7 +2421,7 @@ void translateExp(treeNode node, pOperand place) {
     // Exp -> MINUS Exp
     else if (!strcmp(node->first_son->name, "MINUS")) {
         pOperand t1 = newTemp();
-        translateExp(node->first_son->next, t1);
+        translateExp(node->first_son->next_bro, t1);
         pOperand zero = newOperand(OP_CONSTANT, 0);
         genInterCode(IR_SUB, place, zero, t1);
     }
@@ -2368,13 +2438,13 @@ void translateExp(treeNode node, pOperand place) {
     // }
     // Exp -> ID LP Args RP
     //		| ID LP RP
-    else if (!strcmp(node->first_son->name, "ID") && node->first_son->next) {
+    else if (!strcmp(node->first_son->name, "ID") && node->first_son->next_bro) {
         pOperand funcTemp = newOperand(OP_FUNCTION, newString(node->first_son->id));
         // Exp -> ID LP Args RP
-        if (!strcmp(node->first_son->next->next->name, "Args")) {
+        if (!strcmp(node->first_son->next_bro->next_bro->name, "Args")) {
             // 处理参数
             pArgList argList = newArgList();
-            translateArgs(node->first_son->next->next, argList);
+            translateArgs(node->first_son->next_bro->next_bro, argList);
             if (!strcmp(node->first_son->id, "write")) {
                 // write 特殊处理
                 genInterCode(IR_WRITE, argList->head->op);
@@ -2474,7 +2544,7 @@ void translateCond(treeNode node, pOperand labelTrue, pOperand labelFalse) {
         translateExp(node->first_son, t1);
         translateExp(node->first_son->next_bro->next_bro, t2);
 
-        pOperand relop = newOperand(OP_RELOP, newString(node->first_son->next->id));
+        pOperand relop = newOperand(OP_RELOP, newString(node->first_son->next_bro->id));
 
         if (t1->kind == OP_ADDRESS) {
             pOperand temp = newTemp();
@@ -2491,18 +2561,18 @@ void translateCond(treeNode node, pOperand labelTrue, pOperand labelFalse) {
         genInterCode(IR_GOTO, labelFalse);
     }
     // Exp -> Exp AND Exp
-    else if (!strcmp(node->first_son->next->name, "AND")) {
+    else if (!strcmp(node->first_son->next_bro->name, "AND")) {
         pOperand label1 = newLabel();
         translateCond(node->first_son, label1, labelFalse);
         genInterCode(IR_LABEL, label1);
-        translateCond(node->first_son->next->next, labelTrue, labelFalse);
+        translateCond(node->first_son->next_bro->next_bro, labelTrue, labelFalse);
     }
     // Exp -> Exp OR Exp
-    else if (!strcmp(node->first_son->next->name, "OR")) {
+    else if (!strcmp(node->first_son->next_bro->name, "OR")) {
         pOperand label1 = newLabel();
         translateCond(node->first_son, labelTrue, label1);
         genInterCode(IR_LABEL, label1);
-        translateCond(node->first_son->next->next, labelTrue, labelFalse);
+        translateCond(node->first_son->next_bro->next_bro, labelTrue, labelFalse);
     }
     // 其他情况下进入Cond
     // Exp -> int,float...
@@ -2539,7 +2609,7 @@ void translateArgs(treeNode node, pArgList argList) {
         if (item && item->field->type->kind == ARRAY) {
             // 暂不接受数组传参
             // TODO 
-            interError = TRUE;
+            interError = 1;
             printf(
                 "Cannot translate: Code containsvariables of "
                 "multi-dimensional array type or parameters of array "
@@ -2550,13 +2620,13 @@ void translateArgs(treeNode node, pArgList argList) {
     addArg(argList, temp);
 
     // Args -> Exp COMMA Args
-    if (node->first_son->next != NULL) {
-        translateArgs(node->first_son->next->next, argList);
+    if (node->first_son->next_bro != NULL) {
+        translateArgs(node->first_son->next_bro->next_bro, argList);
     }
 }
 
 
-
+FILE* fw;
 
 int main(int argc, char** argv){
     if (argc <= 2) return 1;
@@ -2565,7 +2635,7 @@ int main(int argc, char** argv){
         printf("File Open Error!");
         return 1;
     }
-    FILE* fw = fopen(argv[2], "wt+");
+    fw = fopen(argv[2], "wt+");
     if (!fw) {
         perror(argv[2]);
         return 1;

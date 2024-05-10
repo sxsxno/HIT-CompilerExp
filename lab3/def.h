@@ -26,3 +26,4 @@ enum {
     TYPE_OTHER,
     NONE
 };
+// extern FILE* fw;

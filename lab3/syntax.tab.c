@@ -78,8 +78,10 @@
         yylloc.last_column = yycolumn + yyleng - 1; \
         yycolumn += yyleng;
     int yydebug = 1;
+    treeNode root;
+    extern FILE* fw;
 
-#line 83 "syntax.tab.c"
+#line 85 "syntax.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -161,11 +163,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "syntax.y"
+#line 16 "syntax.y"
 
     treeNode node_;
 
-#line 169 "syntax.tab.c"
+#line 171 "syntax.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -560,14 +562,14 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    41,    42,    44,    45,    46,    47,    48,
-      49,    51,    52,    53,    55,    56,    58,    59,    62,    63,
-      66,    69,    70,    71,    72,    75,    76,    77,    78,    81,
-      82,    84,    86,    87,    90,    91,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   105,   106,   108,   109,
-     110,   112,   113,   115,   116,   118,   119,   120,   121,   122,
-     123,   124,   125,   126,   127,   128,   129,   130,   131,   132,
-     133,   134,   135,   137,   138
+       0,    41,    41,    54,    55,    57,    58,    59,    60,    61,
+      62,    64,    65,    66,    68,    69,    71,    72,    75,    76,
+      79,    82,    83,    84,    85,    88,    89,    90,    91,    94,
+      95,    97,    99,   100,   103,   104,   106,   107,   108,   109,
+     110,   111,   112,   113,   114,   115,   118,   119,   121,   122,
+     123,   125,   126,   128,   129,   131,   132,   133,   134,   135,
+     136,   137,   138,   139,   140,   141,   142,   143,   144,   145,
+     146,   147,   148,   150,   151
 };
 #endif
 
@@ -1569,445 +1571,455 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 39 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Program");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list);if(0) print_tree((yyval.node_),0);if(is_wrong == 1) return;table = initTable(); sementic_process((yyval.node_)); deleteTable(table);}
-#line 1575 "syntax.tab.c"
-    break;
-
-  case 3:
 #line 41 "syntax.y"
-                                { (yyval.node_) = make_node(yylineno,5,"ExtDefList");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
-#line 1581 "syntax.tab.c"
-    break;
-
-  case 4:
-#line 42 "syntax.y"
-                        { (yyval.node_) = NULL;}
+                        { (yyval.node_) = make_node(yylineno,5,"Program");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list);
+    if(0) print_tree((yyval.node_),0);
+    if(is_wrong == 1) return;
+    table = initTable(); 
+    sementic_process((yyval.node_)); 
+    interCodeList = newInterCodeList();
+    genInterCodes((yyval.node_));
+    if( interError ==0 ) {
+        printInterCode(fw, interCodeList);
+    }
+    deleteTable(table);}
 #line 1587 "syntax.tab.c"
     break;
 
-  case 5:
-#line 44 "syntax.y"
-                                   { (yyval.node_) = make_node(yylineno,5,"ExtDef");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 3:
+#line 54 "syntax.y"
+                                { (yyval.node_) = make_node(yylineno,5,"ExtDefList");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1593 "syntax.tab.c"
     break;
 
-  case 6:
-#line 45 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"ExtDef");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 4:
+#line 55 "syntax.y"
+                        { (yyval.node_) = NULL;}
 #line 1599 "syntax.tab.c"
     break;
 
-  case 7:
-#line 46 "syntax.y"
-                              { (yyval.node_) = make_node(yylineno,5,"ExtDef");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 5:
+#line 57 "syntax.y"
+                                   { (yyval.node_) = make_node(yylineno,5,"ExtDef");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1605 "syntax.tab.c"
     break;
 
-  case 8:
-#line 47 "syntax.y"
-                           { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"ExtDef"); }
+  case 6:
+#line 58 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"ExtDef");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1611 "syntax.tab.c"
     break;
 
-  case 9:
-#line 48 "syntax.y"
-                  { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"ExtDef"); }
+  case 7:
+#line 59 "syntax.y"
+                              { (yyval.node_) = make_node(yylineno,5,"ExtDef");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1617 "syntax.tab.c"
     break;
 
-  case 10:
-#line 49 "syntax.y"
+  case 8:
+#line 60 "syntax.y"
                            { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"ExtDef"); }
 #line 1623 "syntax.tab.c"
     break;
 
-  case 11:
-#line 51 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"ExtDecList");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 9:
+#line 61 "syntax.y"
+                  { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"ExtDef"); }
 #line 1629 "syntax.tab.c"
     break;
 
-  case 12:
-#line 52 "syntax.y"
-                                { (yyval.node_) = make_node(yylineno,5,"ExtDecList");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 10:
+#line 62 "syntax.y"
+                           { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"ExtDef"); }
 #line 1635 "syntax.tab.c"
     break;
 
-  case 13:
-#line 53 "syntax.y"
-                              { is_wrong=1; }
+  case 11:
+#line 64 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"ExtDecList");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1641 "syntax.tab.c"
     break;
 
-  case 14:
-#line 55 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Specifier");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 12:
+#line 65 "syntax.y"
+                                { (yyval.node_) = make_node(yylineno,5,"ExtDecList");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1647 "syntax.tab.c"
     break;
 
-  case 15:
-#line 56 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Specifier");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 13:
+#line 66 "syntax.y"
+                              { is_wrong=1; }
 #line 1653 "syntax.tab.c"
     break;
 
-  case 16:
-#line 58 "syntax.y"
-                                              { (yyval.node_) = make_node(yylineno,5,"StructSpecifier");treeNode N_list[5]={(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),5,N_list); }
+  case 14:
+#line 68 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Specifier");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1659 "syntax.tab.c"
     break;
 
-  case 17:
-#line 59 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"StructSpecifier");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 15:
+#line 69 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Specifier");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1665 "syntax.tab.c"
     break;
 
-  case 18:
-#line 62 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"OptTag");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 16:
+#line 71 "syntax.y"
+                                              { (yyval.node_) = make_node(yylineno,5,"StructSpecifier");treeNode N_list[5]={(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),5,N_list); }
 #line 1671 "syntax.tab.c"
     break;
 
-  case 19:
-#line 63 "syntax.y"
-                        { (yyval.node_) = NULL;}
+  case 17:
+#line 72 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"StructSpecifier");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1677 "syntax.tab.c"
     break;
 
-  case 20:
-#line 66 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Tag");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 18:
+#line 75 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"OptTag");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1683 "syntax.tab.c"
     break;
 
-  case 21:
-#line 69 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"VarDec");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 19:
+#line 76 "syntax.y"
+                        { (yyval.node_) = NULL;}
 #line 1689 "syntax.tab.c"
     break;
 
-  case 22:
-#line 70 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"VarDec");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
+  case 20:
+#line 79 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Tag");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1695 "syntax.tab.c"
     break;
 
-  case 23:
-#line 71 "syntax.y"
-                         { is_wrong=1; }
+  case 21:
+#line 82 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"VarDec");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1701 "syntax.tab.c"
     break;
 
-  case 24:
-#line 72 "syntax.y"
-               { is_wrong=1; }
+  case 22:
+#line 83 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"VarDec");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
 #line 1707 "syntax.tab.c"
     break;
 
-  case 25:
-#line 75 "syntax.y"
-                          { (yyval.node_) = make_node(yylineno,5,"FunDec");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
+  case 23:
+#line 84 "syntax.y"
+                         { is_wrong=1; }
 #line 1713 "syntax.tab.c"
     break;
 
-  case 26:
-#line 76 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"FunDec");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 24:
+#line 85 "syntax.y"
+               { is_wrong=1; }
 #line 1719 "syntax.tab.c"
     break;
 
-  case 27:
-#line 77 "syntax.y"
-                     { is_wrong=1; }
+  case 25:
+#line 88 "syntax.y"
+                          { (yyval.node_) = make_node(yylineno,5,"FunDec");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
 #line 1725 "syntax.tab.c"
     break;
 
-  case 28:
-#line 78 "syntax.y"
-                          { is_wrong=1; }
+  case 26:
+#line 89 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"FunDec");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1731 "syntax.tab.c"
     break;
 
-  case 29:
-#line 81 "syntax.y"
-                                 { (yyval.node_) = make_node(yylineno,5,"VarList");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 27:
+#line 90 "syntax.y"
+                     { is_wrong=1; }
 #line 1737 "syntax.tab.c"
     break;
 
-  case 30:
-#line 82 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"VarList");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 28:
+#line 91 "syntax.y"
+                          { is_wrong=1; }
 #line 1743 "syntax.tab.c"
     break;
 
-  case 31:
-#line 84 "syntax.y"
-                            { (yyval.node_) = make_node(yylineno,5,"ParamDec");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 29:
+#line 94 "syntax.y"
+                                 { (yyval.node_) = make_node(yylineno,5,"VarList");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1749 "syntax.tab.c"
     break;
 
-  case 32:
-#line 86 "syntax.y"
-                                { (yyval.node_) = make_node(yylineno,5,"CompSt");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
+  case 30:
+#line 95 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"VarList");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1755 "syntax.tab.c"
     break;
 
-  case 33:
-#line 87 "syntax.y"
-               { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 31:
+#line 97 "syntax.y"
+                            { (yyval.node_) = make_node(yylineno,5,"ParamDec");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1761 "syntax.tab.c"
     break;
 
-  case 34:
-#line 90 "syntax.y"
-                         { (yyval.node_) = make_node(yylineno,5,"StmtList");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 32:
+#line 99 "syntax.y"
+                                { (yyval.node_) = make_node(yylineno,5,"CompSt");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
 #line 1767 "syntax.tab.c"
     break;
 
-  case 35:
-#line 91 "syntax.y"
-                        { (yyval.node_) = NULL;}
+  case 33:
+#line 100 "syntax.y"
+               { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1773 "syntax.tab.c"
     break;
 
-  case 36:
-#line 93 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 34:
+#line 103 "syntax.y"
+                         { (yyval.node_) = make_node(yylineno,5,"StmtList");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1779 "syntax.tab.c"
     break;
 
-  case 37:
-#line 94 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 35:
+#line 104 "syntax.y"
+                        { (yyval.node_) = NULL;}
 #line 1785 "syntax.tab.c"
     break;
 
-  case 38:
-#line 95 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 36:
+#line 106 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1791 "syntax.tab.c"
     break;
 
-  case 39:
-#line 96 "syntax.y"
-                         { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[5]={(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),5,N_list); }
+  case 37:
+#line 107 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1797 "syntax.tab.c"
     break;
 
-  case 40:
-#line 97 "syntax.y"
-                                  { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[7]={(yyvsp[-6].node_),(yyvsp[-5].node_),(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),7,N_list); }
+  case 38:
+#line 108 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1803 "syntax.tab.c"
     break;
 
-  case 41:
-#line 98 "syntax.y"
-                           { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[5]={(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),5,N_list); }
+  case 39:
+#line 109 "syntax.y"
+                         { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[5]={(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),5,N_list); }
 #line 1809 "syntax.tab.c"
     break;
 
-  case 42:
-#line 99 "syntax.y"
-                    { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 40:
+#line 110 "syntax.y"
+                                  { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[7]={(yyvsp[-6].node_),(yyvsp[-5].node_),(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),7,N_list); }
 #line 1815 "syntax.tab.c"
     break;
 
-  case 43:
-#line 100 "syntax.y"
-                     { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 41:
+#line 111 "syntax.y"
+                           { (yyval.node_) = make_node(yylineno,5,"Stmt");treeNode N_list[5]={(yyvsp[-4].node_),(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),5,N_list); }
 #line 1821 "syntax.tab.c"
     break;
 
-  case 44:
-#line 101 "syntax.y"
-                        { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 42:
+#line 112 "syntax.y"
+                    { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1827 "syntax.tab.c"
     break;
 
-  case 45:
-#line 102 "syntax.y"
-                         { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 43:
+#line 113 "syntax.y"
+                     { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1833 "syntax.tab.c"
     break;
 
-  case 46:
-#line 105 "syntax.y"
-                      { (yyval.node_) = make_node(yylineno,5,"DefList");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 44:
+#line 114 "syntax.y"
+                        { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1839 "syntax.tab.c"
     break;
 
-  case 47:
-#line 106 "syntax.y"
-                        { (yyval.node_) = NULL;}
+  case 45:
+#line 115 "syntax.y"
+                         { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1845 "syntax.tab.c"
     break;
 
-  case 48:
-#line 108 "syntax.y"
-                              { (yyval.node_) = make_node(yylineno,5,"Def");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 46:
+#line 118 "syntax.y"
+                      { (yyval.node_) = make_node(yylineno,5,"DefList");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1851 "syntax.tab.c"
     break;
 
-  case 49:
-#line 109 "syntax.y"
-                           { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 47:
+#line 119 "syntax.y"
+                        { (yyval.node_) = NULL;}
 #line 1857 "syntax.tab.c"
     break;
 
-  case 50:
-#line 110 "syntax.y"
-                              { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
+  case 48:
+#line 121 "syntax.y"
+                              { (yyval.node_) = make_node(yylineno,5,"Def");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1863 "syntax.tab.c"
     break;
 
-  case 51:
-#line 112 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"DecList");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 49:
+#line 122 "syntax.y"
+                           { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1869 "syntax.tab.c"
     break;
 
-  case 52:
-#line 113 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"DecList");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 50:
+#line 123 "syntax.y"
+                              { is_wrong=1;(yyval.node_) = make_node(yylineno,5,"CompSt"); }
 #line 1875 "syntax.tab.c"
     break;
 
-  case 53:
-#line 115 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Dec");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 51:
+#line 125 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"DecList");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1881 "syntax.tab.c"
     break;
 
-  case 54:
-#line 116 "syntax.y"
-                           { (yyval.node_) = make_node(yylineno,5,"Dec");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 52:
+#line 126 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"DecList");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1887 "syntax.tab.c"
     break;
 
-  case 55:
-#line 118 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 53:
+#line 128 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Dec");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1893 "syntax.tab.c"
     break;
 
-  case 56:
-#line 119 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 54:
+#line 129 "syntax.y"
+                           { (yyval.node_) = make_node(yylineno,5,"Dec");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1899 "syntax.tab.c"
     break;
 
-  case 57:
-#line 120 "syntax.y"
+  case 55:
+#line 131 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1905 "syntax.tab.c"
     break;
 
-  case 58:
-#line 121 "syntax.y"
+  case 56:
+#line 132 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1911 "syntax.tab.c"
     break;
 
-  case 59:
-#line 122 "syntax.y"
+  case 57:
+#line 133 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1917 "syntax.tab.c"
     break;
 
-  case 60:
-#line 123 "syntax.y"
+  case 58:
+#line 134 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1923 "syntax.tab.c"
     break;
 
-  case 61:
-#line 124 "syntax.y"
+  case 59:
+#line 135 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1929 "syntax.tab.c"
     break;
 
-  case 62:
-#line 125 "syntax.y"
+  case 60:
+#line 136 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1935 "syntax.tab.c"
     break;
 
-  case 63:
-#line 126 "syntax.y"
+  case 61:
+#line 137 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1941 "syntax.tab.c"
     break;
 
-  case 64:
-#line 127 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 62:
+#line 138 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1947 "syntax.tab.c"
     break;
 
-  case 65:
-#line 128 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
+  case 63:
+#line 139 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1953 "syntax.tab.c"
     break;
 
-  case 66:
-#line 129 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
+  case 64:
+#line 140 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1959 "syntax.tab.c"
     break;
 
-  case 67:
-#line 130 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 65:
+#line 141 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[2]={(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),2,N_list); }
 #line 1965 "syntax.tab.c"
     break;
 
-  case 68:
-#line 131 "syntax.y"
+  case 66:
+#line 142 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
 #line 1971 "syntax.tab.c"
     break;
 
-  case 69:
-#line 132 "syntax.y"
+  case 67:
+#line 143 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1977 "syntax.tab.c"
     break;
 
-  case 70:
-#line 133 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 68:
+#line 144 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[4]={(yyvsp[-3].node_),(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),4,N_list); }
 #line 1983 "syntax.tab.c"
     break;
 
-  case 71:
-#line 134 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 69:
+#line 145 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
 #line 1989 "syntax.tab.c"
     break;
 
-  case 72:
-#line 135 "syntax.y"
+  case 70:
+#line 146 "syntax.y"
                         { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 1995 "syntax.tab.c"
     break;
 
-  case 73:
-#line 137 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Args");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+  case 71:
+#line 147 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 2001 "syntax.tab.c"
     break;
 
-  case 74:
-#line 138 "syntax.y"
-                        { (yyval.node_) = make_node(yylineno,5,"Args");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+  case 72:
+#line 148 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Exp");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
 #line 2007 "syntax.tab.c"
     break;
 
+  case 73:
+#line 150 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Args");treeNode N_list[3]={(yyvsp[-2].node_),(yyvsp[-1].node_),(yyvsp[0].node_)};link_node((yyval.node_),3,N_list); }
+#line 2013 "syntax.tab.c"
+    break;
 
-#line 2011 "syntax.tab.c"
+  case 74:
+#line 151 "syntax.y"
+                        { (yyval.node_) = make_node(yylineno,5,"Args");treeNode N_list[1]={(yyvsp[0].node_)};link_node((yyval.node_),1,N_list); }
+#line 2019 "syntax.tab.c"
+    break;
+
+
+#line 2023 "syntax.tab.c"
 
       default: break;
     }
@@ -2245,7 +2257,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 140 "syntax.y"
+#line 153 "syntax.y"
 
 #include"lex.yy.c"
 void yyerror(const char* msg){

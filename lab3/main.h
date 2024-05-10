@@ -250,8 +250,8 @@ typedef struct _interCodeList {
     int tempVarNum;
     int labelNum;
 } InterCodeList;
-
-extern boolean interError;
+// extern FILE* fw;
+extern int interError;
 extern pInterCodeList interCodeList;
 
 // Operand func
