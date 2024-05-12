@@ -2285,6 +2285,7 @@ void translateExp(treeNode node, pOperand place) {
                 translateCond(node, label1, label2);
                 genInterCode(IR_LABEL, label1);
                 genInterCode(IR_ASSIGN, place, true_num);
+                genInterCode(IR_LABEL, label2);
             } 
             else {
                 // Exp -> Exp ASSIGNOP Exp
@@ -2294,6 +2295,11 @@ void translateExp(treeNode node, pOperand place) {
                     pOperand t1 = newTemp();
                     translateExp(node->first_son, t1);
                     genInterCode(IR_ASSIGN, t1, t2);
+                    if (place != NULL)
+                    {
+                        pOperand Const_1 = newOperand(OP_CONSTANT, 1);
+                        genInterCode(IR_ASSIGN, place, t1); // EDITING
+                    }
                 } 
                 else {
                     pOperand t1 = newTemp();
@@ -2534,8 +2540,24 @@ void translateCond(treeNode node, pOperand labelTrue, pOperand labelFalse) {
     //      | NOT Exp
 
     // Exp -> NOT Exp
+    printf("%p\n",node);
     if (!strcmp(node->first_son->name, "NOT")) {
         translateCond(node->first_son->next_bro, labelFalse, labelTrue);
+    }
+    // Exp -> ID
+    else if(!strcmp(node->first_son->name,"ID")){ // Editing
+        pOperand t1 = newTemp();
+        translateExp(node, t1);
+        pOperand t2 = newOperand(OP_CONSTANT, 0);
+        pOperand relop = newOperand(OP_RELOP, newString("!="));
+
+        if (t1->kind == OP_ADDRESS) {
+            pOperand temp = newTemp();
+            genInterCode(IR_READ_ADDR, temp, t1);
+            t1 = temp;
+        }
+        genInterCode(IR_IF_GOTO, t1, relop, t2, labelTrue);
+        genInterCode(IR_GOTO, labelFalse);
     }
     // Exp -> Exp RELOP Exp
     else if (!strcmp(node->first_son->next_bro->name, "RELOP")) {
